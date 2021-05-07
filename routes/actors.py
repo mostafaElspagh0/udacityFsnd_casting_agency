@@ -1,6 +1,8 @@
 from flask import jsonify, Blueprint
 from auth import requires_auth
 from models.actor import Actor
+from app.db import db
+
 bp = Blueprint('actors', __name__, url_prefix='/actors')
 
 
@@ -20,13 +22,16 @@ def get_actors():
     }), 200
 
 
-@bp.route('/', methods=['DELETE'])
+@bp.route('/<id:int>', methods=['DELETE'])
 @requires_auth('delete:actors')
-def delete_actors():
-    # TODO//: implemet endpoint
+def delete_actors(id):
+    actor = Actor.query.get(id)
+    db.session.delete(actor)
+    db.session.commit()
+
     return jsonify({
-        "success": False,
-        "error": "not implemented"
+        "success": True,
+        "actors": [actor.toDict()]
     }), 200
 
 
