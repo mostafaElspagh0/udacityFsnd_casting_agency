@@ -28,28 +28,48 @@ def delete_actors(id):
     actor = Actor.query.get(id)
     db.session.delete(actor)
     db.session.commit()
-
     return jsonify({
         "success": True,
         "actors": [actor.toDict()]
+        'code': 204,
     }), 200
 
 
 @bp.route('/', methods=['POST'])
 @requires_auth('add:actors')
 def post_actors():
-    # TODO//: implemet endpoint
+    json_data = request.json
+    name = json_data['name']
+    age = json_data['age']
+    gender = json_data['gender']
+    new_actor = Actor(name=name, age=age, gender=gender)
+    session = db.session
+    try:
+        db.session.add(new_actor)
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+        return jsonify({
+            "success": False,
+            "error": Exception.__repr__(),
+            'code': 500,
+        }), 500
+    finally:
+        db.session.close()
+
     return jsonify({
-        "success": False,
-        "error": "not implemented"
-    }), 200
+        "success": True,
+        "actors": [new_actor.toDict()]
+    }), 201
 
 
-@bp.route('/', methods=['PATCH'])
+@bp.route('/<id:int>', methods=['PATCH'])
 @requires_auth('patch:actors')
-def get_actors():
-    # TODO//: implemet endpoint
+def get_actors(id):
+    json_data = request.json
+    actor = Actor.query.get(id)
+    actor.update(json_data)
     return jsonify({
-        "success": False,
-        "error": "not implemented"
+        "success": True,
+        "actors": [actor.toDict()]
     }), 200
