@@ -9,3 +9,11 @@ class Actor(db.Model):
 
     def __repr__(self):
         return f'<Actor {self.id},{self.name},{self.age},{self.gender}>'
+
+    def toDict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "age": self.age,
+            "gender": self.gender
+        }
