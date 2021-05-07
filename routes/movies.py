@@ -1,11 +1,11 @@
 from flask import jsonify, Blueprint
 from auth import requires_auth
-bp = Blueprint('actors', __name__, url_prefix='/actors')
+bp = Blueprint('movies', __name__, url_prefix='/movies')
 
 
 @bp.route('/', methods=['GET'])
-@requires_auth('get:actors')
-def get_actors():
+@requires_auth('get:movies')
+def get_movies():
     # TODO//: implemet endpoint
     return jsonify({
         "success": False,
@@ -14,8 +14,8 @@ def get_actors():
 
 
 @bp.route('/', methods=['DELETE'])
-@requires_auth('delete:actors')
-def delete_actors():
+@requires_auth('delete:movies')
+def delete_movies():
     # TODO//: implemet endpoint
     return jsonify({
         "success": False,
@@ -24,8 +24,8 @@ def delete_actors():
 
 
 @bp.route('/', methods=['POST'])
-@requires_auth('add:actors')
-def post_actors():
+@requires_auth('add:movies')
+def post_movies():
     # TODO//: implemet endpoint
     return jsonify({
         "success": False,
@@ -34,8 +34,8 @@ def post_actors():
 
 
 @bp.route('/', methods=['PATCH'])
-@requires_auth('patch:actors')
-def get_actors():
+@requires_auth('patch:movies')
+def patch_movies():
     # TODO//: implemet endpoint
     return jsonify({
         "success": False,
