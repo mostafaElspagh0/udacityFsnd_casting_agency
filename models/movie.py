@@ -8,3 +8,10 @@ class Movie(db.Model):
 
     def __repr__(self):
         return f'<Movie {self.id},{self.title},{self.release_date}>'
+
+    def toDict(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "release_date": self.release_date,
+        }
