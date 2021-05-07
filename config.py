@@ -1,0 +1,1 @@
+HELLOWORLD = "hello from config"
