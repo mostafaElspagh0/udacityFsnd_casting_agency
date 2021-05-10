@@ -28,7 +28,7 @@ def delete_movies(payload,id):
     db.session.commit()
     return jsonify({
         "success": True,
-        "actors": [movie.toDict()]
+        "actors": [movie.toDict()],
         'code': 200,
     }), 200
 

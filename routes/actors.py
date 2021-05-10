@@ -1,7 +1,7 @@
-from flask import jsonify, Blueprint,request
+from flask import jsonify, Blueprint, request
 from auth import requires_auth
 from models.actor import Actor
-from app.db import db
+from db import db
 
 bp = Blueprint('actors', __name__, url_prefix='/actors')
 
@@ -24,7 +24,7 @@ def get_actors(payload):
 
 @bp.route('/<int:id>', methods=['DELETE'])
 @requires_auth('delete:actors')
-def delete_actors(payload,id):
+def delete_actors(payload, id):
     actor = Actor.query.get(id)
     db.session.delete(actor)
     db.session.commit()
@@ -65,7 +65,7 @@ def post_actors(payload):
 
 @bp.route('/<int:id>', methods=['PATCH'])
 @requires_auth('patch:actors')
-def patch_actors(payload,id):
+def patch_actors(payload, id):
     json_data = request.json
     actor = Actor.query.get(id)
     actor.update(json_data)
