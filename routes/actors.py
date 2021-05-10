@@ -1,4 +1,4 @@
-from flask import jsonify, Blueprint
+from flask import jsonify, Blueprint,request
 from auth import requires_auth
 from models.actor import Actor
 from app.db import db
@@ -8,9 +8,9 @@ bp = Blueprint('actors', __name__, url_prefix='/actors')
 
 @bp.route('/', methods=['GET'])
 @requires_auth('get:actors')
-def get_actors():
-    page = request.args.get('page', default='1', type=int)
-    per_page = request.args.get('per_page', default='10', type=int)
+def get_actors(payload):
+    page = int(request.args.get('page', default='1', type=int))
+    per_page = int(request.args.get('per_page', default='10', type=int))
     actors = Actor.query.paginate(
         page=page, per_page=per_page)
     return jsonify({
@@ -22,22 +22,22 @@ def get_actors():
     }), 200
 
 
-@bp.route('/<id:int>', methods=['DELETE'])
+@bp.route('/<int:id>', methods=['DELETE'])
 @requires_auth('delete:actors')
-def delete_actors(id):
+def delete_actors(payload,id):
     actor = Actor.query.get(id)
     db.session.delete(actor)
     db.session.commit()
     return jsonify({
         "success": True,
-        "actors": [actor.toDict()]
+        "actors": [actor.toDict()],
         'code': 204,
     }), 200
 
 
 @bp.route('/', methods=['POST'])
 @requires_auth('add:actors')
-def post_actors():
+def post_actors(payload):
     json_data = request.json
     name = json_data['name']
     age = json_data['age']
@@ -63,9 +63,9 @@ def post_actors():
     }), 201
 
 
-@bp.route('/<id:int>', methods=['PATCH'])
+@bp.route('/<int:id>', methods=['PATCH'])
 @requires_auth('patch:actors')
-def get_actors(id):
+def patch_actors(payload,id):
     json_data = request.json
     actor = Actor.query.get(id)
     actor.update(json_data)

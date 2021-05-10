@@ -6,7 +6,7 @@ bp = Blueprint('movies', __name__, url_prefix='/movies')
 
 @bp.route('/', methods=['GET'])
 @requires_auth('get:movies')
-def get_movies():
+def get_movies(payload):
     page = request.args.get('page', default='1', type=int)
     per_page = request.args.get('per_page', default='10', type=int)
     movies = movies.query.paginate(
@@ -20,9 +20,9 @@ def get_movies():
     }), 200
 
 
-@bp.route('/<id:int>', methods=['DELETE'])
+@bp.route('/<int:id>', methods=['DELETE'])
 @requires_auth('delete:movies')
-def delete_movies(id):
+def delete_movies(payload,id):
     movie = Movie.query.get(id)
     db.session.delete(movie)
     db.session.commit()
@@ -35,7 +35,7 @@ def delete_movies(id):
 
 @bp.route('/', methods=['POST'])
 @requires_auth('add:movies')
-def post_movies():
+def post_movies(payload):
     json_data = request.json
     title = json_data['title']
     release_date = json_data['release_date']
@@ -62,7 +62,7 @@ def post_movies():
 
 @bp.route('/', methods=['PATCH'])
 @requires_auth('patch:movies')
-def patch_movies():
+def patch_movies(payload):
     json_data = request.json
     movie = Movie.query.get(id)
     Movie.update(json_data)
