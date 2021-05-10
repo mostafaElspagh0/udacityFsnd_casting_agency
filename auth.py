@@ -2,7 +2,7 @@ from flask import request
 from functools import wraps
 from jose import jwt
 import requests
-from .config import *
+from config import *
 
 ## AuthError Exception
 '''
