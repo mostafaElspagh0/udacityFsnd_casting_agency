@@ -24,6 +24,23 @@ def get_actors(payload):
     }), 200
 
 
+@bp.route('/<int:id>', methods=['GET'])
+@requires_auth('get:actors')
+def get_actors_by_id(payload, id):
+    actor: Actor = Actor.query.get(int(id))
+    if actor is None:
+        return jsonify({
+            "success": False,
+            'code': "NOT FOUND",
+        }), 404
+    else:
+        return jsonify({
+            "success": True,
+            "actors": [actor.toDict()],
+            'code': "SUCCESS",
+        }), 200
+
+
 @bp.route('/<int:id>', methods=['DELETE'])
 @requires_auth('delete:actors')
 def delete_actors(payload, id):
