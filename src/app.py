@@ -12,7 +12,7 @@ def create_app():
     setup_db(app)
 
     # register models
-    from src.models import Actor, Movie
+    from src.db import Actor, Movie
     app.register_blueprint(actors_router)
     app.register_blueprint(movies_router)
 
@@ -21,7 +21,7 @@ def create_app():
         return "healthy"
 
     @app.errorhandler(AuthError)
-    def handle_bad_request(e:AuthError):
+    def handle_bad_request(e: AuthError):
         return jsonify({
             "success": False,
             "error": e.error,
