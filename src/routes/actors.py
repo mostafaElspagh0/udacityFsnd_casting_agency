@@ -1,5 +1,6 @@
-from os import error
+from os import error, name
 from flask import jsonify, Blueprint, request
+from flask_sqlalchemy import BaseQuery
 from sqlalchemy.orm.session import Session
 from src.auth import requires_auth
 from src.models.actor import Actor
@@ -115,8 +116,17 @@ def post_actors(payload):
 @requires_auth('patch:actors')
 def patch_actors(payload, id):
     json_data = request.json
-    actor = Actor.query.get(id)
-    actor.update(json_data)
+    actorQuery: BaseQuery = db.session.query(Actor).filter_by(id=id)
+    actor: Actor = actorQuery.one_or_none()
+    if actor is None:
+        return jsonify({
+            "success": False,
+            'code': "NOT FOUND",
+        }), 404
+
+    actorQuery.update(json_data)
+
+    db.session.commit()
     return jsonify({
         "success": True,
         "actors": [actor.toDict()]
