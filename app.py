@@ -14,7 +14,7 @@ def create_app():
     app.register_blueprint(actors_router)
     app.register_blueprint(movies_router)
 
-    @app.route("/",['GET'])
+    @app.route('/', methods=['GET'])
     def healthy():
         return "healthy"
 
