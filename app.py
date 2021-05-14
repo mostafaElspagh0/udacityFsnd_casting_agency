@@ -1,6 +1,8 @@
 from flask import Flask
+from flask.json import jsonify
 from db import setup_db, setup_migration
 from routes import *
+from auth import AuthError
 
 
 def create_app():
@@ -18,4 +20,11 @@ def create_app():
     def healthy():
         return "healthy"
 
+    @app.errorhandler(AuthError)
+    def handle_bad_request(e):
+        return jsonify({
+            "success": False,
+            "error" : "UNAUTHORIZED",
+            'code': 401,
+        }), 401
     return app
