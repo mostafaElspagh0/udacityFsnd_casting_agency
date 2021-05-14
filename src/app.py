@@ -21,10 +21,10 @@ def create_app():
         return "healthy"
 
     @app.errorhandler(AuthError)
-    def handle_bad_request(e):
+    def handle_bad_request(e:AuthError):
         return jsonify({
             "success": False,
-            "error": "UNAUTHORIZED",
-            'code': 401,
+            "error": e.error,
+            'code': "AuthError",
         }), 401
     return app
