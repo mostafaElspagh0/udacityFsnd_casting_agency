@@ -11,3 +11,5 @@ AUTH0_DOMAIN = os.getenv("AUTH0_DOMAIN")
 ALGORITHMS = [i.strip() for i in os.getenv("ALGORITHMS").split(",")]
 
 API_AUDIENCE = os.getenv("API_AUDIENCE")
+
+DEBUG = True
