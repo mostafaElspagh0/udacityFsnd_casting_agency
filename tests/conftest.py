@@ -1,7 +1,6 @@
 import os
+import flask_migrate
 from tests.utils import login_util
-from flask import Flask, Response
-from flask.wrappers import Request
 import pytest
 from src.app import create_app
 
@@ -10,7 +9,12 @@ os.environ["ALLOW_EXPIRED_TOKENS"] = "1"
 
 @pytest.fixture
 def client():
-    return create_app().test_client()
+    os.system("rm /tmp/foo.db")
+    app = create_app()
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////tmp/foo.db"
+    with app.app_context() as k:
+        flask_migrate.upgrade()
+    return app.test_client()
 
 
 @pytest.fixture
