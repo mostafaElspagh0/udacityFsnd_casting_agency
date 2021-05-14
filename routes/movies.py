@@ -1,16 +1,18 @@
 from flask import jsonify, Blueprint
+from flask.globals import request
 from auth import requires_auth
 from models.movie import Movie
+from db import db
 bp = Blueprint('movies', __name__, url_prefix='/movies')
 
 
 @bp.route('/', methods=['GET'])
 @requires_auth('get:movies')
 def get_movies(payload):
-    page = request.args.get('page', default='1', type=int)
-    per_page = request.args.get('per_page', default='10', type=int)
-    movies = movies.query.paginate(
-        page=page, per_page=per_page)
+    page = int(request.args.get('page', default='1', type=int))
+    per_page = int(request.args.get('per_page', default='10', type=int))
+    movies = Movie.query.paginate(
+        page=page, per_page=per_page).items
     return jsonify({
         "success": True,
         "movies": [
@@ -40,9 +42,8 @@ def post_movies(payload):
     title = json_data['title']
     release_date = json_data['release_date']
     new_movie = Movie(title=title, release_date=release_date)
-    session = db.session
     try:
-        db.session.add(new_actor)
+        db.session.add(new_movie)
         db.session.commit()
     except Exception:
         db.session.rollback()
@@ -56,17 +57,18 @@ def post_movies(payload):
 
     return jsonify({
         "success": True,
-        "movies": [new_actor.toDict()]
+        "movies": [new_movie.toDict()]
     }), 201
 
 
-@bp.route('/', methods=['PATCH'])
-@requires_auth('patch:movies')
-def patch_movies(payload):
+@bp.route('/<int:id>', methods=['PATCH'])
+@requires_auth('patch:actors')
+def patch_actors(payload, id):
     json_data = request.json
-    movie = Movie.query.get(id)
-    Movie.update(json_data)
+    actor = Actor.query.get(id)
+    actor.update(json_data)
     return jsonify({
         "success": True,
-        "movies": [actor.toDict()]
+        "actors": [actor.toDict()]
     }), 200
+

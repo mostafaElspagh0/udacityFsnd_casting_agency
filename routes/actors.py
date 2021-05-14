@@ -12,7 +12,7 @@ def get_actors(payload):
     page = int(request.args.get('page', default='1', type=int))
     per_page = int(request.args.get('per_page', default='10', type=int))
     actors = Actor.query.paginate(
-        page=page, per_page=per_page)
+        page=page, per_page=per_page).items
     return jsonify({
         "success": True,
         "actors": [
