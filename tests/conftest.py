@@ -45,9 +45,11 @@ def casting_assistant_headers():
 
 @pytest.fixture
 def casting_director_token():
-    username = os.getenv("CASTING_DIRECTOR_USER")
-    password = os.getenv("CASTING_DIRECTOR_PWD")
-    return login_util(username, password)
+    expired_token = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ilk1S3MwNE5KTGhfcWl4eC1Mc3AzVSJ9.eyJpc3MiOiJodHRwczovL2hhcHB5MjAwMC51cy5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NjA5OGEyZDRiNzQzYTkwMDZhMGEzMWQyIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdC86NTAwMCIsImlhdCI6MTYyMDk2NzU0NywiZXhwIjoxNjIwOTc0NzQ3LCJhenAiOiJrN1pFcU95Qm9QVXMyenF3NXhCSGgxeXRNcnpwbWE2NyIsInNjb3BlIjoiIiwicGVybWlzc2lvbnMiOlsiYWRkOmFjdG9ycyIsImRlbGV0ZTphY3RvcnMiLCJnZXQ6YWN0b3JzIiwiZ2V0Om1vdmllcyIsInBhdGNoOmFjdG9ycyIsInBhdGNoOm1vdmllcyJdfQ.fFsPZcQ24Sqd3Z4Il0XgHA3MnbUwMfoKy1lituTNRLmEuLE_FHjAF68VNkIYjnSv9WF-EP04NJdB17HyVbh3rXNF-Pfc7c0XK-g62cDnSlVp3fDu28BLKVQ7pp9KKYB6CI3IFo107barYMlJw-Ah-FmkTvlRAvNO_JNw15D1gcF5wTGOm9ms4C7viby1q6-lROMV96g6iuex96kjYbEFeP7MLTJhOZ8Aoel37wx2lBOM9NDCzFT5cXnKfDhZPtMrjvDrkWeE2IvbxfANp4PZe3cW6EuPe9XePK4iFw0KaIjvZrL5nzjF8bIwAiuQJuDWzvQcv07-ln91rtdxjwMY4w'
+    headers = {
+        "Authorization": f"Bearer {expired_token}"
+    }
+    return headers
 
 
 @pytest.fixture
