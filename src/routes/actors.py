@@ -127,5 +127,6 @@ def patch_actors(payload, id):
     db.session.commit()
     return jsonify({
         "success": True,
-        "actors": [actor.toDict()]
-    }), 200
+        "actors": [actor.toDict()],
+        "code":"UPDATED"
+    }), 202
