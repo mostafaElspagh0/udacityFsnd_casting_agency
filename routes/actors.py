@@ -1,4 +1,6 @@
+from os import error
 from flask import jsonify, Blueprint, request
+from sqlalchemy.orm.session import Session
 from auth import requires_auth
 from models.actor import Actor
 from db import db
@@ -43,24 +45,29 @@ def post_actors(payload):
     age = json_data['age']
     gender = json_data['gender']
     new_actor = Actor(name=name, age=age, gender=gender)
-    session = db.session
+    error = False
     try:
         db.session.add(new_actor)
         db.session.commit()
-    except Exception:
+        actor_dict = new_actor.toDict()
+    except Exception as k:
+        e = k
         db.session.rollback()
-        return jsonify({
-            "success": False,
-            "error": Exception.__repr__(),
-            'code': 500,
-        }), 500
+        error = True
     finally:
         db.session.close()
 
-    return jsonify({
-        "success": True,
-        "actors": [new_actor.toDict()]
-    }), 201
+    if not error:
+        return jsonify({
+            "success": True,
+            "actors": [actor_dict]
+        }), 201
+    else:
+        return jsonify({
+            "success": False,
+            "ex": str(e),
+            'code': 500,
+        }), 500
 
 
 @bp.route('/<int:id>', methods=['PATCH'])
