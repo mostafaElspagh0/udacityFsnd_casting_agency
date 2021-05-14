@@ -2,7 +2,10 @@ import os
 
 HELLOWORLD = "hello from config"
 
-SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL").replace("postgres","postgresql")
+temp_databaseuri= os.getenv("DATABASE_URL")
+if "postgresql" not in temp_databaseuri:
+    temp_databaseuri.replace("postgres","postgresql")
+SQLALCHEMY_DATABASE_URI = temp_databaseuri
 
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
