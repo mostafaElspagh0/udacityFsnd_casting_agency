@@ -1,8 +1,8 @@
 from flask import Flask
 from flask.json import jsonify
-from db import setup_db, setup_migration
-from routes import *
-from auth import AuthError
+from src.db import setup_db, setup_migration
+from src.routes import *
+from src.auth import AuthError
 
 
 def create_app():
@@ -12,7 +12,7 @@ def create_app():
     setup_db(app)
 
     # register models
-    from models import Actor, Movie
+    from src.models import Actor, Movie
     app.register_blueprint(actors_router)
     app.register_blueprint(movies_router)
 
@@ -24,7 +24,7 @@ def create_app():
     def handle_bad_request(e):
         return jsonify({
             "success": False,
-            "error" : "UNAUTHORIZED",
+            "error": "UNAUTHORIZED",
             'code': 401,
         }), 401
     return app

@@ -1,8 +1,8 @@
 from flask import jsonify, Blueprint
 from flask.globals import request
-from auth import requires_auth
-from models.movie import Movie
-from db import db
+from src.auth import requires_auth
+from src.models.movie import Movie
+from src.db import db
 bp = Blueprint('movies', __name__, url_prefix='/movies')
 
 

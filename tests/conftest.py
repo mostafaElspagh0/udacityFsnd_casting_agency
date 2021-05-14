@@ -3,7 +3,7 @@ from tests.utils import login_util
 from flask import Flask, Response
 from flask.wrappers import Request
 import pytest
-from app import create_app
+from src.app import create_app
 
 
 @pytest.fixture

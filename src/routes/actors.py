@@ -1,9 +1,9 @@
 from os import error
 from flask import jsonify, Blueprint, request
 from sqlalchemy.orm.session import Session
-from auth import requires_auth
-from models.actor import Actor
-from db import db
+from src.auth import requires_auth
+from src.models.actor import Actor
+from src.db import db
 
 bp = Blueprint('actors', __name__, url_prefix='/actors')
 
