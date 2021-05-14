@@ -27,14 +27,37 @@ def get_actors(payload):
 @bp.route('/<int:id>', methods=['DELETE'])
 @requires_auth('delete:actors')
 def delete_actors(payload, id):
-    actor = Actor.query.get(id)
-    db.session.delete(actor)
-    db.session.commit()
-    return jsonify({
-        "success": True,
-        "actors": [actor.toDict()],
-        'code': 204,
-    }), 200
+    actor: Actor = Actor.query.get(int(id))
+    if actor is None:
+        return jsonify({
+            "success": False,
+            'code': "NOT FOUND",
+        }), 404
+
+    error = None
+
+    try:
+        actordict = actor.toDict()
+        db.session.delete(actor)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        error = e
+    finally:
+        db.session.close()
+
+    if error is None:
+        return jsonify({
+            "success": True,
+            "actors": [actordict],
+            'code': "DELETED",
+        }), 202
+    else:
+        return jsonify({
+            "success": False,
+            'code': "INTERNAL SERVER ERROR",
+            "error": str(error),
+        }), 500
 
 
 @bp.route('/', methods=['POST'])
@@ -60,13 +83,14 @@ def post_actors(payload):
     if not error:
         return jsonify({
             "success": True,
+            'code': 'created',
             "actors": [actor_dict]
         }), 201
     else:
         return jsonify({
             "success": False,
             "ex": str(e),
-            'code': 500,
+            'code': 'internal server error',
         }), 500
 
 
