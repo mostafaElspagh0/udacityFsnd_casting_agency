@@ -1,4 +1,5 @@
 from functools import wraps
+from src.auth.AuthError import AuthError
 from jose import jwt
 from config import *
 from src.auth.utils import (get_token_auth_header,
@@ -10,7 +11,8 @@ def requires_auth(permission=''):
         @wraps(f)
         def wrapper(*args, **kwargs):
             token = get_token_auth_header()
-            if os.getenv("ENV") == "TEST":
+            allow_expired_tokens = os.getenv("ALLOW_EXPIRED_TOKENS")
+            if allow_expired_tokens == "1":
                 payload = jwt.get_unverified_claims(token)
             else:
                 payload = verify_decode_jwt(token)
