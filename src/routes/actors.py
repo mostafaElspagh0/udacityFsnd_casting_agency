@@ -14,7 +14,7 @@ bp = Blueprint('actors', __name__, url_prefix='/actors')
 def get_actors(payload):
     page = int(request.args.get('page', default='1', type=int))
     per_page = int(request.args.get('per_page', default='10', type=int))
-    actors = Actor.query.paginate(
+    actors = db.session.query(Actor).order_by(Actor.id).paginate(
         page=page, per_page=per_page).items
     return jsonify({
         "success": True,
@@ -123,9 +123,7 @@ def patch_actors(payload, id):
             "success": False,
             'code': "NOT FOUND",
         }), 404
-
     actorQuery.update(json_data)
-
     db.session.commit()
     return jsonify({
         "success": True,
