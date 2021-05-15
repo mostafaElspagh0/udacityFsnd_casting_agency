@@ -1,5 +1,6 @@
 from flask import jsonify, Blueprint
 from flask.globals import request
+from flask_sqlalchemy import BaseQuery
 from src.auth import requires_auth
 from src.db import Movie
 from src.db import db
@@ -116,9 +117,19 @@ def post_movies(payload):
 @requires_auth('patch:actors')
 def patch_actors(payload, id):
     json_data = request.json
-    actor = Actor.query.get(id)
-    actor.update(json_data)
+    json_data['release_date'] = datetime.datetime.strptime(
+        json_data['release_date'], '%Y-%m-%d %H:%M:%S.%f')
+    movie_query: BaseQuery = db.session.query(Movie).filter_by(id=id)
+    movie: Movie = movie_query.one_or_none()
+    if movie is None:
+        return jsonify({
+            "success": False,
+            'code': "NOT FOUND",
+        }), 404
+    movie_query.update(json_data)
+    db.session.commit()
     return jsonify({
         "success": True,
-        "actors": [actor.toDict()]
-    }), 200
+        "movies": [movie.toDict()],
+        "code": "UPDATED"
+    }), 202
