@@ -107,7 +107,7 @@ def post_actors(payload):
     else:
         return jsonify({
             "success": False,
-            "ex": str(e),
+            "error": str(e),
             'code': 'internal server error',
         }), 500
 
