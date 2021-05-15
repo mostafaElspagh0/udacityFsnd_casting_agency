@@ -1,2 +1,2 @@
-from db.models import *
-from db.db import *
+from .models import Actor,Movie
+from .db import setup_db,db

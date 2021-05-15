@@ -1,6 +1,6 @@
 from flask import Flask
 from flask.json import jsonify
-from src.db import setup_db, setup_migration
+from src.db import setup_db
 from src.routes import *
 from src.auth import AuthError
 

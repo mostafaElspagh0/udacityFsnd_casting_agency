@@ -3,7 +3,7 @@ from flask import jsonify, Blueprint, request
 from flask_sqlalchemy import BaseQuery
 from sqlalchemy.orm.session import Session
 from src.auth import requires_auth
-from src.models.actor import Actor
+from src.db import Actor
 from src.db import db
 
 bp = Blueprint('actors', __name__, url_prefix='/actors')
