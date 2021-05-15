@@ -25,7 +25,7 @@ def get_movies(payload):
 
 @bp.route('/<int:id>', methods=['GET'])
 @requires_auth('get:movies')
-def get_movies_by_id(payload,id):
+def get_movies_by_id(payload, id):
     movie: Movie = Movie.query.get(int(id))
     if movie is None:
         return jsonify({
@@ -43,14 +43,37 @@ def get_movies_by_id(payload,id):
 @bp.route('/<int:id>', methods=['DELETE'])
 @requires_auth('delete:movies')
 def delete_movies(payload, id):
-    movie = Movie.query.get(id)
-    db.session.delete(movie)
-    db.session.commit()
-    return jsonify({
-        "success": True,
-        "actors": [movie.toDict()],
-        'code': 200,
-    }), 200
+    movie: Movie = Movie.query.get(int(id))
+    if movie is None:
+        return jsonify({
+            "success": False,
+            'code': "NOT FOUND",
+        }), 404
+
+    error = None
+
+    try:
+        movie_dict = movie.toDict()
+        db.session.delete(movie)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        error = e
+    finally:
+        db.session.close()
+
+    if error is None:
+        return jsonify({
+            "success": True,
+            "movies": [movie_dict],
+            'code': "DELETED",
+        }), 202
+    else:
+        return jsonify({
+            "success": False,
+            'code': "INTERNAL SERVER ERROR",
+            "error": str(error),
+        }), 500
 
 
 @bp.route('/', methods=['POST'])
