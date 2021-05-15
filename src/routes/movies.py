@@ -60,14 +60,15 @@ def post_movies(payload):
     if error is None:
         return jsonify({
             "success": True,
-            "movies": [movie_dict]
+            "movies": [movie_dict],
+            "code" : "CREATED"
         }), 201
 
     else:
         return jsonify({
             "success": False,
             "error": str(error),
-            'code': 500,
+            'code': "INTERNAL SERVER ERROR",
         }), 500
 
 
