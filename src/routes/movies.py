@@ -19,8 +19,25 @@ def get_movies(payload):
         "movies": [
             movie.toDict() for movie in movies
         ],
-        'code': 200
+        'code': "SUCCESS"
     }), 200
+
+
+@bp.route('/<int:id>', methods=['GET'])
+@requires_auth('get:movies')
+def get_movies_by_id(payload,id):
+    movie: Movie = Movie.query.get(int(id))
+    if movie is None:
+        return jsonify({
+            "success": False,
+            'code': "NOT FOUND",
+        }), 404
+    else:
+        return jsonify({
+            "success": True,
+            "movies": [movie.toDict()],
+            'code': "SUCCESS",
+        }), 200
 
 
 @bp.route('/<int:id>', methods=['DELETE'])
@@ -61,7 +78,7 @@ def post_movies(payload):
         return jsonify({
             "success": True,
             "movies": [movie_dict],
-            "code" : "CREATED"
+            "code": "CREATED"
         }), 201
 
     else:
