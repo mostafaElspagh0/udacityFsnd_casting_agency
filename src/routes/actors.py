@@ -1,10 +1,9 @@
-from os import error, name
-from flask import jsonify, Blueprint, request
+from flask import jsonify, Blueprint, request, abort
 from flask_sqlalchemy import BaseQuery
-from sqlalchemy.orm.session import Session
 from src.auth import requires_auth
 from src.db import Actor
 from src.db import db
+
 
 bp = Blueprint('actors', __name__, url_prefix='/actors')
 
@@ -30,10 +29,7 @@ def get_actors(payload):
 def get_actors_by_id(payload, id):
     actor: Actor = Actor.query.get(int(id))
     if actor is None:
-        return jsonify({
-            "success": False,
-            'code': "NOT FOUND",
-        }), 404
+        abort(404)
     else:
         return jsonify({
             "success": True,
@@ -47,10 +43,7 @@ def get_actors_by_id(payload, id):
 def delete_actors(payload, id):
     actor: Actor = Actor.query.get(int(id))
     if actor is None:
-        return jsonify({
-            "success": False,
-            'code': "NOT FOUND",
-        }), 404
+        abort(404)
 
     error = None
 
@@ -71,12 +64,7 @@ def delete_actors(payload, id):
             'code': "DELETED",
         }), 202
     else:
-        return jsonify({
-            "success": False,
-            'code': "INTERNAL SERVER ERROR",
-            "error": str(error),
-        }), 500
-
+        abort(500)
 
 @bp.route('/', methods=['POST'])
 @requires_auth('add:actors')
@@ -105,11 +93,7 @@ def post_actors(payload):
             "actors": [actor_dict]
         }), 201
     else:
-        return jsonify({
-            "success": False,
-            "error": str(e),
-            'code': 'internal server error',
-        }), 500
+        abort(500)
 
 
 @bp.route('/<int:id>', methods=['PATCH'])
@@ -119,14 +103,11 @@ def patch_actors(payload, id):
     actorQuery: BaseQuery = db.session.query(Actor).filter_by(id=id)
     actor: Actor = actorQuery.one_or_none()
     if actor is None:
-        return jsonify({
-            "success": False,
-            'code': "NOT FOUND",
-        }), 404
+        abort(404)
     actorQuery.update(json_data)
     db.session.commit()
     return jsonify({
         "success": True,
         "actors": [actor.toDict()],
-        "code":"UPDATED"
+        "code": "UPDATED"
     }), 202

@@ -2,8 +2,6 @@ from flask import Flask
 from flask.json import jsonify
 from src.db import setup_db
 from src.routes import *
-from src.auth import AuthError
-
 
 def create_app():
     app = Flask(__name__)
@@ -15,16 +13,11 @@ def create_app():
     from src.db import Actor, Movie
     app.register_blueprint(actors_router)
     app.register_blueprint(movies_router)
-
+    register_my_own_error_handler(app)
+    
     @app.route('/', methods=['GET'])
     def healthy():
         return "healthy"
 
-    @app.errorhandler(AuthError)
-    def handle_bad_request(e: AuthError):
-        return jsonify({
-            "success": False,
-            "error": e.error,
-            'code': "AuthError",
-        }), 401
+   
     return app

@@ -1,4 +1,4 @@
-from flask import jsonify, Blueprint
+from flask import jsonify, Blueprint,abort
 from flask.globals import request
 from flask_sqlalchemy import BaseQuery
 from src.auth import requires_auth
@@ -29,10 +29,7 @@ def get_movies(payload):
 def get_movies_by_id(payload, id):
     movie: Movie = Movie.query.get(int(id))
     if movie is None:
-        return jsonify({
-            "success": False,
-            'code': "NOT FOUND",
-        }), 404
+        abort(404)
     else:
         return jsonify({
             "success": True,
@@ -46,10 +43,7 @@ def get_movies_by_id(payload, id):
 def delete_movies(payload, id):
     movie: Movie = Movie.query.get(int(id))
     if movie is None:
-        return jsonify({
-            "success": False,
-            'code': "NOT FOUND",
-        }), 404
+        abort(404)
 
     error = None
 
@@ -70,11 +64,7 @@ def delete_movies(payload, id):
             'code': "DELETED",
         }), 202
     else:
-        return jsonify({
-            "success": False,
-            'code': "INTERNAL SERVER ERROR",
-            "error": str(error),
-        }), 500
+        abort(500)
 
 
 @bp.route('/', methods=['POST'])
@@ -106,11 +96,7 @@ def post_movies(payload):
         }), 201
 
     else:
-        return jsonify({
-            "success": False,
-            "error": str(error),
-            'code': "INTERNAL SERVER ERROR",
-        }), 500
+        abort(500)
 
 
 @bp.route('/<int:id>', methods=['PATCH'])
@@ -122,10 +108,7 @@ def patch_actors(payload, id):
     movie_query: BaseQuery = db.session.query(Movie).filter_by(id=id)
     movie: Movie = movie_query.one_or_none()
     if movie is None:
-        return jsonify({
-            "success": False,
-            'code': "NOT FOUND",
-        }), 404
+        abort(404)
     movie_query.update(json_data)
     db.session.commit()
     return jsonify({
