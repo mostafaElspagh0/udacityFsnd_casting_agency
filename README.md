@@ -1,5 +1,5 @@
 # Casting Agency API
-
+an api to make managing casting agency easier
 ## Capstone Project for Udacity's Full Stack Developer Nanodegree
 Heroku Link: https://casting123.herokuapp.com/
 
@@ -72,11 +72,5 @@ The application has three different types of roles:
 ## Testing
 For testing the backend, run the following commands (in the exact order):
 ```
-dropdb capstone_test
-createdb capstone_test
-psql capstone_test < casting.sql
-python test.py
+python -m pytest
 ```
-
-Alternate way: Create the db `capstone_test` using PgAdmin and copy the contents of casting.sql and paste them
-in Query tool in PgAdmin and create the db table with records. Then, run the command `python test.py`.
