@@ -2,7 +2,7 @@ from flask import Flask
 from flask import json
 from flask.json import jsonify
 
-from auth import AuthError
+from src.auth import AuthError
 
 
 def register_my_own_error_handler(app: Flask):
@@ -22,7 +22,7 @@ def register_my_own_error_handler(app: Flask):
             'code': "NotFound",
         }), 404
 
-    @app.errorhandler(404)
+    @app.errorhandler(500)
     def handle_internel_server_error(error):
         return jsonify({
             "success": False,
