@@ -1,5 +1,6 @@
 from flask import jsonify, Blueprint, request, abort
 from flask_sqlalchemy import BaseQuery
+from auth.enums import Permissions
 from src.auth import requires_auth
 from src.database import Actor, db
 
@@ -8,7 +9,7 @@ bp = Blueprint('actors', __name__, url_prefix='/actors')
 
 
 @bp.route('/', methods=['GET'])
-@requires_auth('get:actors')
+@requires_auth(Permissions.get_actors)
 def get_actors(payload):
     page = int(request.args.get('page', default='1', type=int))
     per_page = int(request.args.get('per_page', default='10', type=int))
@@ -24,7 +25,7 @@ def get_actors(payload):
 
 
 @bp.route('/<int:id>', methods=['GET'])
-@requires_auth('get:actors')
+@requires_auth(Permissions.get_actors)
 def get_actors_by_id(payload, id):
     actor: Actor = Actor.query.get(int(id))
     if actor is None:
@@ -38,7 +39,7 @@ def get_actors_by_id(payload, id):
 
 
 @bp.route('/<int:id>', methods=['DELETE'])
-@requires_auth('delete:actors')
+@requires_auth(Permissions.delete_actors)
 def delete_actors(payload, id):
     actor: Actor = Actor.query.get(int(id))
     if actor is None:
@@ -67,7 +68,7 @@ def delete_actors(payload, id):
 
 
 @bp.route('/', methods=['POST'])
-@requires_auth('add:actors')
+@requires_auth(Permissions.add_actors)
 def post_actors(payload):
     json_data = request.json
     name = json_data['name']
@@ -97,7 +98,7 @@ def post_actors(payload):
 
 
 @bp.route('/<int:id>', methods=['PATCH'])
-@requires_auth('patch:actors')
+@requires_auth(Permissions.patch_actors)
 def patch_actors(payload, id):
     json_data = request.json
     actorQuery: BaseQuery = db.session.query(Actor).filter_by(id=id)

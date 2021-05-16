@@ -1,15 +1,15 @@
 from flask import jsonify, Blueprint, abort
 from flask.globals import request
 from flask_sqlalchemy import BaseQuery
-from database.models.actor import Actor
-from src.auth import requires_auth
+from src.database import Actor
+from src.auth import requires_auth,Permissions
 from src.database import Movie, db
 import datetime
 bp = Blueprint('movies', __name__, url_prefix='/movies')
 
 
 @bp.route('/', methods=['GET'])
-@requires_auth('get:movies')
+@requires_auth(Permissions.get_movies)
 def get_movies(payload):
     page = int(request.args.get('page', default='1', type=int))
     per_page = int(request.args.get('per_page', default='10', type=int))
@@ -25,7 +25,7 @@ def get_movies(payload):
 
 
 @bp.route('/<int:id>', methods=['GET'])
-@requires_auth('get:movies')
+@requires_auth(Permissions.get_movies)
 def get_movies_by_id(payload, id):
     movie: Movie = Movie.query.get(int(id))
     if movie is None:
@@ -39,7 +39,7 @@ def get_movies_by_id(payload, id):
 
 
 @bp.route('/<int:id>', methods=['DELETE'])
-@requires_auth('delete:movies')
+@requires_auth(Permissions.delete_movies)
 def delete_movies(payload, id):
     movie: Movie = Movie.query.get(int(id))
     if movie is None:
@@ -68,7 +68,7 @@ def delete_movies(payload, id):
 
 
 @bp.route('/', methods=['POST'])
-@requires_auth('add:movies')
+@requires_auth(Permissions.add_movies)
 def post_movies(payload):
     json_data = request.json
     title = json_data['title']
@@ -100,8 +100,8 @@ def post_movies(payload):
 
 
 @bp.route('/<int:id>', methods=['PATCH'])
-@requires_auth('patch:actors')
-def patch_actors(payload, id):
+@requires_auth(Permissions.patch_movies)
+def patch_movies(payload, id):
     json_data = request.json
     json_data['release_date'] = datetime.datetime.strptime(
         json_data['release_date'], '%Y-%m-%d %H:%M:%S.%f')
@@ -119,7 +119,7 @@ def patch_actors(payload, id):
 
 
 @bp.route('/<int:id>/acotrs', methods=['GET'])
-@requires_auth(['get:actors', 'get:movies'])
+@requires_auth([Permissions.get_actors, Permissions.get_movies])
 def get_movie_acotrs(payload, id):
     actor: Actor = Actor.query.get(int(id))
     if actor is None:
