@@ -120,7 +120,7 @@ def patch_actors(payload, id):
 
 @bp.route('/<int:id>/acotrs', methods=['GET'])
 @requires_auth(['get:actors', 'get:movies'])
-def get_actors_by_id(payload, id):
+def get_movie_acotrs(payload, id):
     actor: Actor = Actor.query.get(int(id))
     if actor is None:
         abort(404)
