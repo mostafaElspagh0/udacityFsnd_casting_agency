@@ -2,8 +2,7 @@ from flask import jsonify, Blueprint,abort
 from flask.globals import request
 from flask_sqlalchemy import BaseQuery
 from src.auth import requires_auth
-from src.db import Movie
-from src.db import db
+from src.database import Movie, db
 import datetime
 bp = Blueprint('movies', __name__, url_prefix='/movies')
 

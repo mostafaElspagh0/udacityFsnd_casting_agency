@@ -1,8 +1,7 @@
 from flask import jsonify, Blueprint, request, abort
 from flask_sqlalchemy import BaseQuery
 from src.auth import requires_auth
-from src.db import Actor
-from src.db import db
+from src.database import Actor, db
 
 
 bp = Blueprint('actors', __name__, url_prefix='/actors')
@@ -65,6 +64,7 @@ def delete_actors(payload, id):
         }), 202
     else:
         abort(500)
+
 
 @bp.route('/', methods=['POST'])
 @requires_auth('add:actors')
