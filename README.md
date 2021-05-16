@@ -38,6 +38,9 @@ This will install all of the required packages.
 To run the server, execute:
 
 ```bash
+export ALGORITHMS="RS256"
+export AUTH0_DOMAIN="happy2000.us.auth0.com"
+export API_AUDIENCE="http://localhost/:5000"
 export DATABASE_URL=<database-connection-url>
 export FLASK_APP=app.py
 flask db migrate
