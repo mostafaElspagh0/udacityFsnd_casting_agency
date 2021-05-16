@@ -1,6 +1,7 @@
-from flask import jsonify, Blueprint,abort
+from flask import jsonify, Blueprint, abort
 from flask.globals import request
 from flask_sqlalchemy import BaseQuery
+from database.models.actor import Actor
 from src.auth import requires_auth
 from src.database import Movie, db
 import datetime
@@ -115,3 +116,19 @@ def patch_actors(payload, id):
         "movies": [movie.toDict()],
         "code": "UPDATED"
     }), 202
+
+
+@bp.route('/<int:id>/acotrs', methods=['GET'])
+@requires_auth(['get:actors', 'get:movies'])
+def get_actors_by_id(payload, id):
+    actor: Actor = Actor.query.get(int(id))
+    if actor is None:
+        abort(404)
+    movies = actor.movies
+    return jsonify({
+        "success": True,
+        "movies": [
+            movie.toDict() for movie in movies
+        ],
+        'code': "SUCCESS"
+    }), 200
